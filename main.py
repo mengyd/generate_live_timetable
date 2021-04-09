@@ -47,33 +47,35 @@ def readData(source_file):
         isUGC = False
         # print(row)
         for content in row :
+            isLive = False
             if col_index != 0 :
                 col_name = headers[col_index-1]
                 if col_name == 'No.' and hasNumbers(str(content)) :
                     isUGC = True
-                    # print('No.:' + str(content))
+                    print('No.:' + str(content))
                 if isUGC :
-                    if col_name == '主播定位':
+                    if col_name == '主播定位' :
                         live_type = content
-                        # print(live_type)
-                    if col_name == '主播':
+                        print(live_type)
+                    if col_name == '主播' :
                         influencer = content
-                        # print(influencer)
+                        print(influencer)
                     if hasNumbers(str(content)) and hasNumbers(str(col_name)) :
                         date = headerToDate(col_name)
-                        weekday = date.weekday()
+                        weekday = date.isoweekday() + 1
                         lines = content.splitlines()
                         for line in lines :
                             if hasNumbers(line) :
                                 start_time, end_time = extractTimes(line.strip())
                                 # print(datetime.strftime(start_time, '%H:%M') + '-' + datetime.strftime(end_time, '%H:%M'))
+                            isLive = True
             col_index += 1
-        live = Live(influencer, date, start_time, end_time, live_type, weekday)
-        if isUGC:
-            lives.append(live)
+            live = Live(influencer, date, start_time, end_time, weekday, live_type=live_type)
+            if isLive and isUGC:
+                lives.append(live)
 
     for live in lives:
-        print(live.influencer)
+        print(live.influencer, ' : ', live.date, ' : ', live.weekday)
 
     return lives
 
@@ -99,7 +101,10 @@ def write_data(lives):
             '日期':dates, '星期':weekdays}
     df = pd.DataFrame(data=datas)
     print(df)
-    df.to_excel('./test.xlsx')
+    today = datetime.today()
+    thismonth = today.strftime('%m')
+    print(thismonth)
+    df.to_excel('./' + str(thismonth) + '月排期细表.xlsx')
 
 
 
