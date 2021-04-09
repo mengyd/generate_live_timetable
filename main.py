@@ -20,7 +20,7 @@ def formatTimeString(time_string):
         time_string = time_string.replace('H', ':00')
     time_string = time_string.replace('H', ':')
     return time_string
-    
+   
 def extractTimes(time_string):
     time_string = time_string.split('/')[0]
     time_string = time_string.split(' ')[0]
