@@ -20,7 +20,7 @@ def link(link_text, show_text):
     link = '<a href="%(link)s" color="blue">%(show)s</a>'%{'link': link_text, 'show': show_text}
     return link
 
-def generate_html(liveinfos, img_timetable, img_producttable):
+def generate_PDF(liveinfos, img_timetable, img_producttable):
     doc = SimpleDocTemplate("livetoday.pdf")
     im_timetable = cv2.imread(img_timetable)
     im_producttable = cv2.imread(img_producttable)
@@ -67,4 +67,3 @@ def generate_html(liveinfos, img_timetable, img_producttable):
 
     # return html
     doc.build(story)
-

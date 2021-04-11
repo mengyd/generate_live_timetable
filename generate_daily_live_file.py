@@ -2,11 +2,11 @@ import pandas as pd
 import os, math
 from datetime import datetime
 from LiveInfo import LiveInfo
-import generateHtml
+import generatePDF
 
 __product_file__ = 'C:\\Workspace\\generate_live_timetable\\UGC产品总表.xlsx'
-__image_timetable__ = 'C:\\Workspace\\generate_live_timetable\\timetable.png'
-__image_producttable__ = 'C:\\Workspace\\generate_live_timetable\\producttable.png'
+__image_timetable__ = 'C:\\Workspace\\generate_live_timetable\\t.png'
+__image_producttable__ = 'C:\\Workspace\\generate_live_timetable\\p.png'
 
 def read_timetable(source_file, date):
     source_table = pd.read_excel(source_file)
@@ -53,4 +53,4 @@ if __name__ == '__main__':
             pass
 
     liveinfos = read_timetable(source_file, date)
-    generateHtml.generate_html(liveinfos, __image_timetable__, __image_producttable__)
+    generatePDF.generate_PDF(liveinfos, __image_timetable__, __image_producttable__)
