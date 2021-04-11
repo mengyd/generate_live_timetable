@@ -5,5 +5,6 @@ class Live:
         self.date = date
         self.start_time = start_time
         self.end_time = end_time
-        self.live_type = live_type
         self.weekday = weekday
+        self.live_type = live_type
+        

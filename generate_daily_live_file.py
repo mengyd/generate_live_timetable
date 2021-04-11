@@ -1,26 +1,38 @@
 import pandas as pd
 import os, math
 from datetime import datetime
-from Live import Live
+from LiveInfo import LiveInfo
+import generateHtml
 
 __product_file__ = 'C:\\Workspace\\generate_live_timetable\\UGC产品总表.xlsx'
+__image_timetable__ = 'C:\\Workspace\\generate_live_timetable\\timetable.png'
+__image_producttable__ = 'C:\\Workspace\\generate_live_timetable\\producttable.png'
 
 def read_timetable(source_file, date):
     source_table = pd.read_excel(source_file)
     second_table = pd.read_excel(source_file, 1)
     product_table = pd.read_excel(__product_file__)
-    product_table = product_table.fillna(method='pad')
-    print(product_table)
+    product_table['Présentateur'] = product_table['Présentateur'].fillna(method='pad')
     datas = source_table.loc[source_table['日期'] == date]
     influencers = datas['主播']
+    liveinfos = []
     for influencer in influencers:
         print(influencer)
+        products_dict = {}
+        codes = {}
         account_line = second_table.loc[second_table['主播'] == influencer.strip()]
         accounts = account_line['账号']
-        print(accounts.to_numpy()[0])
-        products = product_table.loc[product_table['Présentateur'] == influencer.strip()]
-        print(products)
-        
+        account = accounts.to_numpy()[0]
+        # print(account)
+        products = product_table.loc[product_table['Présentateur'] == influencer.strip()].to_numpy()
+        for product in products:
+            products_dict[product[3]] = product[2].strip()
+            codes[product[3]] = product[4]
+        liveinfo = LiveInfo(influencer, account, date, products_dict, codes)
+        liveinfos.append(liveinfo)
+
+    return liveinfos
+
 
 if __name__ == '__main__':
     workpath = os.path.abspath(os.path.join(os.getcwd(), ""))
@@ -40,4 +52,5 @@ if __name__ == '__main__':
         except Exception as e:
             pass
 
-    read_timetable(source_file, date)
+    liveinfos = read_timetable(source_file, date)
+    generateHtml.generate_html(liveinfos, __image_timetable__, __image_producttable__)
