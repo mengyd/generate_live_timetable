@@ -7,12 +7,14 @@ import generatePDF
 __product_file__ = 'C:\\Workspace\\generate_live_timetable\\UGC产品总表.xlsx'
 __image_timetable__ = 'C:\\Workspace\\generate_live_timetable\\t.png'
 __image_producttable__ = 'C:\\Workspace\\generate_live_timetable\\p.png'
+__normal_live_types__ = ["UGC","IP-UGC"]
 
 def read_timetable(source_file, date):
     source_table = pd.read_excel(source_file)
     second_table = pd.read_excel(source_file, 1)
     product_table = pd.read_excel(__product_file__)
-    product_table['Présentateur'] = product_table['Présentateur'].fillna(method='pad')
+    product_table['Présentateur'] = product_table['Présentateur']\
+        .fillna(method='pad')
     datas = source_table.loc[source_table['日期'] == date]
     influencers = datas['主播']
     liveinfos = []
@@ -20,16 +22,21 @@ def read_timetable(source_file, date):
         print(influencer)
         products_dict = {}
         codes = {}
-        account_line = second_table.loc[second_table['主播'] == influencer.strip()]
-        accounts = account_line['账号']
-        account = accounts.to_numpy()[0]
-        # print(account)
-        products = product_table.loc[product_table['Présentateur'] == influencer.strip()].to_numpy()
-        for product in products:
-            products_dict[product[3]] = product[2].strip()
-            codes[product[3]] = product[4]
-        liveinfo = LiveInfo(influencer, account, date, products_dict, codes)
-        liveinfos.append(liveinfo)
+        liveline = datas.loc[datas['主播'] == influencer.strip()]
+        livetype = liveline['类型'].to_numpy()[0]
+        if livetype in __normal_live_types__:
+            account_line = second_table.loc[
+                second_table['主播'] == influencer.strip()]
+            account = account_line['账号'].to_numpy()[0]
+            products = product_table.loc[
+                product_table['Présentateur'] == influencer.strip()
+                ].to_numpy()
+            for product in products:
+                products_dict[product[3]] = product[2].strip()
+                if isinstance(product[4], str):
+                    codes[product[3]] = product[4]
+            liveinfo = LiveInfo(influencer, account, date, products_dict, codes)
+            liveinfos.append(liveinfo)
 
     return liveinfos
 
@@ -41,7 +48,7 @@ if __name__ == '__main__':
         if source_file and os.path.exists(source_file) :
             break
     while True:
-        date_text = input("输入要生成的文件对应日期：")
+        date_text = input("输入要生成的文件对应日期(yyyymmdd)：")
         if not date_text:
             date_text = datetime.today().strftime('%Y%m%d')
 
@@ -52,5 +59,6 @@ if __name__ == '__main__':
         except Exception as e:
             pass
 
-    liveinfos = read_timetable(source_file, date)
-    generatePDF.generate_PDF(liveinfos, __image_timetable__, __image_producttable__)
+    live_infos = read_timetable(source_file, date)
+    generatePDF.generate_PDF(live_infos, __image_timetable__, \
+        __image_producttable__)
