@@ -4,6 +4,7 @@ from datetime import datetime
 from LiveInfo import LiveInfo
 import generatePDF
 
+__default_sourcefile__ = 'C:\\Workspace\\generate_live_timetable\\04月排期细表.xlsx'
 __product_file__ = 'C:\\Workspace\\generate_live_timetable\\UGC产品总表.xlsx'
 __image_timetable__ = 'C:\\Workspace\\generate_live_timetable\\t.png'
 __image_producttable__ = 'C:\\Workspace\\generate_live_timetable\\p.png'
@@ -45,7 +46,9 @@ if __name__ == '__main__':
     workpath = os.path.abspath(os.path.join(os.getcwd(), ""))
     while True:
         source_file = input("输入要导入的源排期表路径：")
-        if source_file and os.path.exists(source_file) :
+        if not source_file : 
+            source_file = __default_sourcefile__
+        if os.path.exists(source_file) :
             break
     while True:
         date_text = input("输入要生成的文件对应日期(yyyymmdd)：")
