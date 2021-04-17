@@ -30,7 +30,6 @@ def generate_PDF(liveinfos, img_timetable, img_producttable):
     im_producttable = cv2.imread(img_producttable)
     h_time, w_time, c = im_timetable.shape
     h_prod, w_prod, c = im_producttable.shape
-    c = None
     h_time = 150
     w_time = 500
     h_prod = 400
