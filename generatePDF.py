@@ -2,7 +2,7 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Image
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfbase import pdfmetrics
-import reportlab, LiveInfo, cv2
+from cv2 import cv2
 # Normal
 # BodyText
 # Italic
@@ -30,6 +30,7 @@ def generate_PDF(liveinfos, img_timetable, img_producttable):
     im_producttable = cv2.imread(img_producttable)
     h_time, w_time, c = im_timetable.shape
     h_prod, w_prod, c = im_producttable.shape
+    c = None
     h_time = 150
     w_time = 500
     h_prod = 400
