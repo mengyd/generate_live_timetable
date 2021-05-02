@@ -19,7 +19,7 @@ from cv2 import cv2
 # UnorderedList
 # OrderedList
 
-def link(link_text, show_text):
+def link(show_text, link_text):
     link = '<a href="%(link)s" color="blue">%(show)s</a>'\
         %{'link': link_text, 'show': show_text}
     return link
@@ -35,6 +35,7 @@ def generate_PDF(liveinfos, img_timetable, img_producttable, h_time, h_prod):
     pdfmetrics.registerFont(TTFont('SimSun', './font/SimSun.ttf'))
     styles = getSampleStyleSheet()
     styles.add(ParagraphStyle(fontName='SimSun', name='Song', leading=20, fontSize=12))
+    styles.add(ParagraphStyle(fontName='SimSun', name='Song_sm', leading=20, fontSize=10))
     story = []
     story.append(timetable_image)
     story.append(producttable_image)
@@ -46,19 +47,23 @@ def generate_PDF(liveinfos, img_timetable, img_producttable, h_time, h_prod):
         ids = ''
 
         story.append(Paragraph('Infos :', styles['Heading5']))
-        for code in live.codes:
-            story.append(Paragraph(str(live.codes[code]), styles['Song']))
+        for product in live.products:
+            # print(product.name, product.codes)
+            for code in product.codes:
+                story.append(Paragraph(str(code), styles['Song']))
 
         story.append(Paragraph('Products :', styles['Heading5']))
         for product in live.products:
-            story.append(Paragraph(link(live.products[product], product), \
+            # 生成产品链接，参数产品名，产品链接
+            story.append(Paragraph(link(product.name, product.link), \
                 styles['Song']))
+            story.append(Paragraph("\t产品名: " + product.alias \
+                + "\tID: " + product.id, styles['Song_sm']))
+            # 产品ID
             if i < len(live.products) -1 :
-                links = links + live.products[product] + ","
-                ids = ids + live.products_id[product] + ","
+                ids = ids + product.id + ","
             else :
-                links = links + live.products[product]
-                ids = ids + live.products_id[product]
+                ids = ids + product.id
             i += 1
 
         story.append(Paragraph('Products ID :', styles['Heading5']))

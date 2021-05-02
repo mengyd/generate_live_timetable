@@ -2,6 +2,7 @@ import pandas as pd
 import os, math
 from datetime import datetime
 from LiveInfo import LiveInfo
+from Product import Product
 import generatePDF
 
 __default_sourcefile__ = 'C:\\Users\\yidon\\OneDrive\\桌面\\05月排期细表.xlsx'
@@ -22,9 +23,7 @@ def read_timetable(source_file, date):
     liveinfos = []
     for influencer in influencers:
         print(influencer)
-        products_dict = {}
-        products_dict2 = {}
-        codes = {}
+        products = []
         liveline = datas.loc[datas['主播'] == influencer.strip()]
         livetypes = liveline['类型'].to_numpy()
         for livetype in livetypes:
@@ -32,24 +31,25 @@ def read_timetable(source_file, date):
                 account_line = second_table.loc[
                     second_table['主播'] == influencer.strip()]
                 account = account_line['账号'].to_numpy()[0]
-                products = product_table.loc[
+                products_list = product_table.loc[
                     product_table['主播'] == influencer.strip()
                     ].to_numpy()
-                for product in products:
-                    # 产品名
-                    if isinstance(product[2], str):
-                        # 产品名对应产品链接
-                        # print(product[5], product[2])
-                        products_dict[product[5]] = product[2].strip()
-                    # 产品ID
-                    if isinstance(product[4], str):
-                        # 产品名对应产品ID
-                        products_dict2[product[5]] = str(int(product[3])).strip()
-                    # 产品Code
-                    if isinstance(product[6], str):
-                        # 产品名对应产品Code
-                        codes[product[5]] = product[6]
-                liveinfo = LiveInfo(influencer, account, date, products_dict, products_dict2, codes)
+                for prod in products_list:
+                    # 如果产品链接非空
+                    if isinstance(prod[2], str):
+                        # 新Product对象，参数产品ID
+                        product = Product(str(int(prod[3])).strip())
+                        product.codes = []
+                        product.name = prod[4]
+                        product.alias = prod[5]
+                        product.link = prod[2].strip()
+                        # 如果产品Code非空
+                        if isinstance(prod[6], str):
+                            # 添加产品Code
+                            product.codes.append(prod[6])
+                        print(product.codes)
+                        products.append(product)
+                liveinfo = LiveInfo(influencer, account, date, products)
                 liveinfos.append(liveinfo)
 
     return liveinfos
