@@ -47,7 +47,6 @@ def read_timetable(source_file, date):
                         if isinstance(prod[6], str):
                             # 添加产品Code
                             product.codes.append(prod[6])
-                        print(product.codes)
                         products.append(product)
                 liveinfo = LiveInfo(influencer, account, date, products)
                 liveinfos.append(liveinfo)

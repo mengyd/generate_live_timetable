@@ -57,8 +57,8 @@ def generate_PDF(liveinfos, img_timetable, img_producttable, h_time, h_prod):
             # 生成产品链接，参数产品名，产品链接
             story.append(Paragraph(link(product.name, product.link), \
                 styles['Song']))
-            story.append(Paragraph("\t产品名: " + product.alias \
-                + "\tID: " + product.id, styles['Song_sm']))
+            story.append(Paragraph("   产品名: " + product.alias \
+                + ";\tID: " + product.id, styles['Song_sm']))
             # 产品ID
             if i < len(live.products) -1 :
                 ids = ids + product.id + ","
