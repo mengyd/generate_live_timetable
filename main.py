@@ -38,6 +38,7 @@ def extractTimes(time_string):
 
 def readData(source_file):
     source_table = pd.read_excel(source_file)
+    source_table['主播'] = source_table['主播'].str.strip()
     headers = source_table.columns
     rows = source_table.itertuples()
     lives = []

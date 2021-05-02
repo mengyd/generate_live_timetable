@@ -20,19 +20,14 @@ from cv2 import cv2
 # OrderedList
 
 def link(link_text, show_text):
-    link = '<a href="%(link)s" color="blue">%(show)s</a>'%{'link': link_text, 'show': show_text}
+    link = '<a href="%(link)s" color="blue">%(show)s</a>'\
+        %{'link': link_text, 'show': show_text}
     return link
 
-def generate_PDF(liveinfos, img_timetable, img_producttable):
+def generate_PDF(liveinfos, img_timetable, img_producttable, h_time, h_prod):
     doc = SimpleDocTemplate("livetoday.pdf")
 
-    im_timetable = cv2.imread(img_timetable)
-    im_producttable = cv2.imread(img_producttable)
-    h_time, w_time, c = im_timetable.shape
-    h_prod, w_prod, c = im_producttable.shape
-    h_time = 150
     w_time = 500
-    h_prod = 400
     w_prod = 500
     timetable_image = Image(img_timetable, w_time, h_time)
     producttable_image = Image(img_producttable, w_prod, h_prod)
@@ -48,6 +43,7 @@ def generate_PDF(liveinfos, img_timetable, img_producttable):
         story.append(Paragraph(live.account, styles['Normal']))
         i = 0
         links = ''
+        ids = ''
 
         story.append(Paragraph('Infos :', styles['Heading5']))
         for code in live.codes:
@@ -56,14 +52,16 @@ def generate_PDF(liveinfos, img_timetable, img_producttable):
         story.append(Paragraph('Products :', styles['Heading5']))
         for product in live.products:
             story.append(Paragraph(link(live.products[product], product), \
-                styles['Normal']))
+                styles['Song']))
             if i < len(live.products) -1 :
                 links = links + live.products[product] + ","
+                ids = ids + live.products_id[product] + ","
             else :
                 links = links + live.products[product]
+                ids = ids + live.products_id[product]
             i += 1
 
-        story.append(Paragraph('Replacement :', styles['Heading5']))
-        story.append(Paragraph(links, styles['Italic']))
+        story.append(Paragraph('Products ID :', styles['Heading5']))
+        story.append(Paragraph(ids, styles['Italic']))
 
     doc.build(story)
