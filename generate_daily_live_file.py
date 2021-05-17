@@ -19,6 +19,7 @@ def read_timetable(source_file, date):
     account_table = pd.read_excel(source_file, 1)
     product_table = pd.read_excel(config['product_file'])
 
+    # load column names and numbers from configurations
     prod_influencer_col = config["producttable_influencer_column_title"]
     prod_link_col = config["producttable_link_column_num"]
     prod_id_col = config["producttable_id_column_num"]
