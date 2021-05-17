@@ -36,6 +36,7 @@ def generate_PDF(liveinfos, img_timetable, img_producttable, h_time, h_prod):
     styles = getSampleStyleSheet()
     styles.add(ParagraphStyle(fontName='SimSun', name='Song', leading=20, fontSize=12))
     styles.add(ParagraphStyle(fontName='SimSun', name='Song_sm', leading=20, fontSize=10))
+    styles.add(ParagraphStyle(fontName='SimSun', name='Song_bg', leading=20, fontSize=14))
     story = []
     story.append(timetable_image)
     story.append(producttable_image)
@@ -48,7 +49,6 @@ def generate_PDF(liveinfos, img_timetable, img_producttable, h_time, h_prod):
 
         story.append(Paragraph('Infos :', styles['Heading5']))
         for product in live.products:
-            # print(product.name, product.codes)
             for code in product.codes:
                 story.append(Paragraph(str(code), styles['Song']))
 
@@ -57,16 +57,22 @@ def generate_PDF(liveinfos, img_timetable, img_producttable, h_time, h_prod):
             # 生成产品链接，参数产品名，产品链接
             story.append(Paragraph(link(product.name, product.link), \
                 styles['Song']))
-            story.append(Paragraph("   产品名: " + product.alias \
+            story.append(Paragraph("产品名: " + product.alias \
                 + ";\tID: " + product.id, styles['Song_sm']))
+            if product.codes:
+                story.append(Paragraph("Codes: ", styles['Bullet']))
+                for code in product.codes:
+                    story.append(Paragraph(code, styles['Song_sm']))
             # 产品ID
             if i < len(live.products) -1 :
                 ids = ids + product.id + ","
             else :
                 ids = ids + product.id
             i += 1
+            story.append(Paragraph('-'*25, styles['Heading2']))
 
         story.append(Paragraph('Products ID :', styles['Heading5']))
         story.append(Paragraph(ids, styles['Italic']))
+        story.append(Paragraph('='*40, styles['Heading1']))
 
     doc.build(story)
