@@ -17,7 +17,7 @@ config = loadConfig(workpath+'/config.json')
 def read_timetable(source_file, date):
     source_table = pd.read_excel(source_file)
     account_table = pd.read_excel(source_file, 1)
-    product_table = pd.read_excel(config['product_file'])
+    product_table = pd.read_excel(config['product_file'], config['producttable_tablename'])
 
     # load column names and numbers from configurations
     prod_influencer_col = config["producttable_influencer_column_title"]

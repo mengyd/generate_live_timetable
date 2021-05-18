@@ -13,6 +13,7 @@
     "producttable_name_column_num": 4,
     "producttable_alias_column_num": 5,
     "producttable_code_column_num": 6,
+    "producttable_tablename": "UGC选品表",
     "sourcetable_influencer_column_title": "主播",
     "sourcetable_date_column_title": "日期",
     "sourcetable_livetype_column_title": "类型",
