@@ -18,7 +18,7 @@ def loadAllias(allias_path):
 
 workpath = os.path.abspath(os.path.join(os.getcwd(), ""))
 config = loadConfig(workpath+'/config.json')
-allias = loadConfig(workpath+'/allias.json')
+allias = loadAllias(workpath+'/allias.json')
 
 def read_timetable(source_file, date):
     source_table = pd.read_excel(source_file)
