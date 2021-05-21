@@ -34,24 +34,41 @@ def read_timetable(source_file, date):
     account_influencer_col = config["accounttable_influencer_column_title"]
     account_accountmail_col = config["accounttable_account_column_title"]
 
+    # influencer column of product table
     product_table[prod_influencer_col] = product_table[prod_influencer_col]\
         .fillna(method='pad')
-    product_table[prod_influencer_col] = product_table[prod_influencer_col].str.strip()
+    product_table[prod_influencer_col] = product_table[prod_influencer_col]\
+        .str.strip().str.upper()
+    product_table[prod_influencer_col] = product_table[prod_influencer_col]\
+        .str.normalize('NFKD').str.encode('ascii', errors='ignore').str.decode('utf-8')
+    
+    # influencer column of account table
+    account_table[account_influencer_col] = account_table[account_influencer_col]\
+        .str.strip().str.upper()
+    account_table[account_influencer_col] = account_table[account_influencer_col]\
+        .str.normalize('NFKD').str.encode('ascii', errors='ignore').str.decode('utf-8')
+
+    # influencer column of time table
+    source_table[src_influencer_col] = source_table[src_influencer_col]\
+        .str.strip().str.upper()
+    source_table[src_influencer_col] = source_table[src_influencer_col]\
+        .str.normalize('NFKD').str.encode('ascii', errors='ignore').str.decode('utf-8')
+
     datas = source_table.loc[source_table[src_date_col] == date]
     influencers = datas[src_influencer_col]
     liveinfos = []
     for influencer in influencers:
         print(influencer)
         products = []
-        liveline = datas.loc[datas[src_influencer_col] == influencer.strip()]
+        liveline = datas.loc[datas[src_influencer_col] == influencer]
         livetypes = liveline[src_livetype_col].to_numpy()
         for livetype in livetypes:
             if livetype in config['single_live_types']:
                 account_line = account_table.loc[
-                    account_table[account_influencer_col] == influencer.strip()]
+                    account_table[account_influencer_col] == influencer]
                 account = account_line[account_accountmail_col].to_numpy()[0]
                 products_list = product_table.loc[
-                    product_table[prod_influencer_col] == influencer.strip()
+                    product_table[prod_influencer_col] == influencer
                     ].to_numpy()
                 if livetype in config['normal_live_types']:
                     for prod in products_list:
