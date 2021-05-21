@@ -11,8 +11,14 @@ def loadConfig(config_path):
     config_data = json.load(f)
     return config_data
 
+def loadAllias(allias_path):
+    f = open(allias_path,'r', encoding='UTF-8')
+    dict_allias = json.load(f)
+    return dict_allias
+
 workpath = os.path.abspath(os.path.join(os.getcwd(), ""))
 config = loadConfig(workpath+'/config.json')
+allias = loadConfig(workpath+'/allias.json')
 
 def read_timetable(source_file, date):
     source_table = pd.read_excel(source_file)
@@ -41,12 +47,16 @@ def read_timetable(source_file, date):
         .str.strip().str.upper()
     product_table[prod_influencer_col] = product_table[prod_influencer_col]\
         .str.normalize('NFKD').str.encode('ascii', errors='ignore').str.decode('utf-8')
+    product_table[prod_influencer_col] = product_table[prod_influencer_col]\
+        .map(allias).fillna(product_table[prod_influencer_col])
     
     # influencer column of account table
     account_table[account_influencer_col] = account_table[account_influencer_col]\
         .str.strip().str.upper()
     account_table[account_influencer_col] = account_table[account_influencer_col]\
         .str.normalize('NFKD').str.encode('ascii', errors='ignore').str.decode('utf-8')
+    account_table[account_influencer_col] = account_table[account_influencer_col]\
+        .map(allias).fillna(account_table[account_influencer_col])
 
     # influencer column of time table
     source_table[src_influencer_col] = source_table[src_influencer_col]\
