@@ -20,6 +20,12 @@ workpath = os.path.abspath(os.path.join(os.getcwd(), ""))
 config = loadConfig(workpath+'/config.json')
 allias = loadAllias(workpath+'/allias.json')
 
+def getProdID(product_link):
+    product_link = product_link.strip()
+    product_id = product_link.split('/')[-1]
+    product_id = product_id.split('.')[0]
+    return product_id
+
 def read_timetable(source_file, date):
     source_table = pd.read_excel(source_file)
     account_table = pd.read_excel(source_file, 1)
@@ -28,7 +34,6 @@ def read_timetable(source_file, date):
     # load column names and numbers from configurations
     prod_influencer_col = config["producttable_influencer_column_title"]
     prod_link_col = config["producttable_link_column_num"]
-    prod_id_col = config["producttable_id_column_num"]
     prod_name_col = config["producttable_name_column_num"]
     prod_alias_col = config["producttable_alias_column_num"]
     prod_code_col = config["producttable_code_column_num"]
@@ -85,7 +90,7 @@ def read_timetable(source_file, date):
                         # 如果产品链接非空
                         if isinstance(prod[prod_link_col], str):
                             # 新Product对象，参数产品ID
-                            product = Product(str(int(prod[prod_id_col])).strip())
+                            product = Product(getProdID(prod[prod_link_col]))
                             product.codes = []
                             product.name = prod[prod_name_col]
                             product.alias = prod[prod_alias_col]
