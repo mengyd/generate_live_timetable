@@ -5,6 +5,9 @@ from LiveInfo import LiveInfo
 from Product import Product
 import generatePDF
 
+# Print all rows
+pd.set_option('display.max_rows', None)
+
 # Load configurations
 def loadConfig(config_path):
     f = open(config_path,'r', encoding='UTF-8')
@@ -68,6 +71,8 @@ def read_timetable(source_file, date):
         .str.strip().str.upper()
     source_table[src_influencer_col] = source_table[src_influencer_col]\
         .str.normalize('NFKD').str.encode('ascii', errors='ignore').str.decode('utf-8')
+    source_table[src_influencer_col] = source_table[src_influencer_col]\
+        .map(allias).fillna(source_table[src_influencer_col])
 
     datas = source_table.loc[source_table[src_date_col] == date]
     influencers = datas[src_influencer_col]
