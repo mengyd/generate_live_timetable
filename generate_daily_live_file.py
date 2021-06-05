@@ -29,6 +29,12 @@ def getProdID(product_link):
     product_id = product_id.split('.')[0]
     return product_id
 
+def normalizeNameColumn(column):
+    column = column.str.strip().str.upper()
+    column = column.str.normalize('NFKD').str.encode('ascii', errors='ignore').str.decode('utf-8')
+    column = column.map(allias).fillna(column)
+    return column
+
 def read_timetable(source_file, date):
     source_table = pd.read_excel(source_file)
     account_table = pd.read_excel(source_file, 1)
@@ -51,28 +57,13 @@ def read_timetable(source_file, date):
     # influencer column of product table
     product_table[prod_influencer_col] = product_table[prod_influencer_col]\
         .fillna(method='pad')
-    product_table[prod_influencer_col] = product_table[prod_influencer_col]\
-        .str.strip().str.upper()
-    product_table[prod_influencer_col] = product_table[prod_influencer_col]\
-        .str.normalize('NFKD').str.encode('ascii', errors='ignore').str.decode('utf-8')
-    product_table[prod_influencer_col] = product_table[prod_influencer_col]\
-        .map(allias).fillna(product_table[prod_influencer_col])
+    product_table[prod_influencer_col] = normalizeNameColumn(product_table[prod_influencer_col])
     
     # influencer column of account table
-    account_table[account_influencer_col] = account_table[account_influencer_col]\
-        .str.strip().str.upper()
-    account_table[account_influencer_col] = account_table[account_influencer_col]\
-        .str.normalize('NFKD').str.encode('ascii', errors='ignore').str.decode('utf-8')
-    account_table[account_influencer_col] = account_table[account_influencer_col]\
-        .map(allias).fillna(account_table[account_influencer_col])
+    account_table[account_influencer_col] = normalizeNameColumn(account_table[account_influencer_col])
 
     # influencer column of time table
-    source_table[src_influencer_col] = source_table[src_influencer_col]\
-        .str.strip().str.upper()
-    source_table[src_influencer_col] = source_table[src_influencer_col]\
-        .str.normalize('NFKD').str.encode('ascii', errors='ignore').str.decode('utf-8')
-    source_table[src_influencer_col] = source_table[src_influencer_col]\
-        .map(allias).fillna(source_table[src_influencer_col])
+    source_table[src_influencer_col] = normalizeNameColumn(source_table[src_influencer_col])
 
     datas = source_table.loc[source_table[src_date_col] == date]
     influencers = datas[src_influencer_col]
@@ -160,4 +151,4 @@ if __name__ == '__main__':
 
     live_infos = read_timetable(source_file, date)
     generatePDF.generate_PDF(live_infos, config['image_timetable'], \
-        config['image_producttable'], h_time, h_prod)
+        config['image_producttable'], h_time, h_prod, date_text)

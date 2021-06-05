@@ -24,8 +24,8 @@ def link(show_text, link_text):
         %{'link': link_text, 'show': show_text}
     return link
 
-def generate_PDF(liveinfos, img_timetable, img_producttable, h_time, h_prod):
-    doc = SimpleDocTemplate("livetoday.pdf")
+def generate_PDF(liveinfos, img_timetable, img_producttable, h_time, h_prod, filename):
+    doc = SimpleDocTemplate(filename[4:]+".pdf")
 
     w_time = 500
     w_prod = 500
