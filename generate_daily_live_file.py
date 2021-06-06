@@ -5,6 +5,9 @@ from LiveInfo import LiveInfo
 from Product import Product
 import generatePDF
 
+# Print all rows
+pd.set_option('display.max_rows', None)
+
 # Load configurations
 def loadConfig(config_path):
     f = open(config_path,'r', encoding='UTF-8')
@@ -20,6 +23,18 @@ workpath = os.path.abspath(os.path.join(os.getcwd(), ""))
 config = loadConfig(workpath+'/config.json')
 allias = loadAllias(workpath+'/allias.json')
 
+def getProdID(product_link):
+    product_link = product_link.strip()
+    product_id = product_link.split('/')[-1]
+    product_id = product_id.split('.')[0]
+    return product_id
+
+def normalizeNameColumn(column):
+    column = column.str.strip().str.upper()
+    column = column.str.normalize('NFKD').str.encode('ascii', errors='ignore').str.decode('utf-8')
+    column = column.map(allias).fillna(column)
+    return column
+
 def read_timetable(source_file, date):
     source_table = pd.read_excel(source_file)
     account_table = pd.read_excel(source_file, 1)
@@ -28,7 +43,6 @@ def read_timetable(source_file, date):
     # load column names and numbers from configurations
     prod_influencer_col = config["producttable_influencer_column_title"]
     prod_link_col = config["producttable_link_column_num"]
-    prod_id_col = config["producttable_id_column_num"]
     prod_name_col = config["producttable_name_column_num"]
     prod_alias_col = config["producttable_alias_column_num"]
     prod_code_col = config["producttable_code_column_num"]
@@ -43,26 +57,13 @@ def read_timetable(source_file, date):
     # influencer column of product table
     product_table[prod_influencer_col] = product_table[prod_influencer_col]\
         .fillna(method='pad')
-    product_table[prod_influencer_col] = product_table[prod_influencer_col]\
-        .str.strip().str.upper()
-    product_table[prod_influencer_col] = product_table[prod_influencer_col]\
-        .str.normalize('NFKD').str.encode('ascii', errors='ignore').str.decode('utf-8')
-    product_table[prod_influencer_col] = product_table[prod_influencer_col]\
-        .map(allias).fillna(product_table[prod_influencer_col])
+    product_table[prod_influencer_col] = normalizeNameColumn(product_table[prod_influencer_col])
     
     # influencer column of account table
-    account_table[account_influencer_col] = account_table[account_influencer_col]\
-        .str.strip().str.upper()
-    account_table[account_influencer_col] = account_table[account_influencer_col]\
-        .str.normalize('NFKD').str.encode('ascii', errors='ignore').str.decode('utf-8')
-    account_table[account_influencer_col] = account_table[account_influencer_col]\
-        .map(allias).fillna(account_table[account_influencer_col])
+    account_table[account_influencer_col] = normalizeNameColumn(account_table[account_influencer_col])
 
     # influencer column of time table
-    source_table[src_influencer_col] = source_table[src_influencer_col]\
-        .str.strip().str.upper()
-    source_table[src_influencer_col] = source_table[src_influencer_col]\
-        .str.normalize('NFKD').str.encode('ascii', errors='ignore').str.decode('utf-8')
+    source_table[src_influencer_col] = normalizeNameColumn(source_table[src_influencer_col])
 
     datas = source_table.loc[source_table[src_date_col] == date]
     influencers = datas[src_influencer_col]
@@ -85,7 +86,7 @@ def read_timetable(source_file, date):
                         # 如果产品链接非空
                         if isinstance(prod[prod_link_col], str):
                             # 新Product对象，参数产品ID
-                            product = Product(str(int(prod[prod_id_col])).strip())
+                            product = Product(getProdID(prod[prod_link_col]))
                             product.codes = []
                             product.name = prod[prod_name_col]
                             product.alias = prod[prod_alias_col]
@@ -150,4 +151,4 @@ if __name__ == '__main__':
 
     live_infos = read_timetable(source_file, date)
     generatePDF.generate_PDF(live_infos, config['image_timetable'], \
-        config['image_producttable'], h_time, h_prod)
+        config['image_producttable'], h_time, h_prod, date_text)
