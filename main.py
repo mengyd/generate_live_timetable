@@ -19,6 +19,7 @@ def formatTimeString(time_string):
     if time_string.endswith('H') :
         time_string = time_string.replace('H', ':00')
     time_string = time_string.replace('H', ':')
+    time_string = time_string + ':00'
     return time_string
    
 def extractTimes(time_string):
@@ -29,11 +30,9 @@ def extractTimes(time_string):
     time_string = time_string.split('+')[0]
 
     strings = time_string.split('-')
-    start_string = formatTimeString(strings[0])
-    end_string = formatTimeString(strings[1])
+    start_time = formatTimeString(strings[0])
+    end_time = formatTimeString(strings[1])
 
-    start_time = datetime.strptime(start_string, '%H:%M')
-    end_time = datetime.strptime(end_string, '%H:%M')
     return start_time, end_time
 
 def readData(source_file):
@@ -44,7 +43,7 @@ def readData(source_file):
     lives = []
     for row in rows :
         col_index = 0
-        influencer, live_type, date, weekday, start_time, end_time = '', '', None, None, None, None
+        influencer, live_type, date, start_time, end_time = '', '', None, None, None
         isUGC = False
         # print(row)
         for content in row :
@@ -53,30 +52,21 @@ def readData(source_file):
                 col_name = headers[col_index-1]
                 if col_name == 'No.' and hasNumbers(str(content)) :
                     isUGC = True
-                    print('No.:' + str(content))
                 if isUGC :
-                    if col_name == '主播定位' :
-                        live_type = content
-                        print(live_type)
+                    live_type = 'UGC'
                     if col_name == '主播' :
                         influencer = content
-                        print(influencer)
                     if hasNumbers(str(content)) and hasNumbers(str(col_name)) :
                         date = headerToDate(col_name)
-                        weekday = date.isoweekday() + 1
                         lines = content.splitlines()
                         for line in lines :
                             if hasNumbers(line) :
                                 start_time, end_time = extractTimes(line.strip())
-                                # print(datetime.strftime(start_time, '%H:%M') + '-' + datetime.strftime(end_time, '%H:%M'))
                             isLive = True
             col_index += 1
-            live = Live(influencer, date, start_time, end_time, weekday, live_type=live_type)
+            live = Live(influencer, date, start_time, end_time, live_type)
             if isLive and isUGC:
                 lives.append(live)
-
-    for live in lives:
-        print(live.influencer, ' : ', live.date, ' : ', live.weekday)
 
     return lives
 
@@ -87,6 +77,15 @@ def write_data(lives):
     end_times = []
     live_types = []
     weekdays = []
+    weekdayChinese = {
+        'Monday':'周一',
+        'Tuesday':'周二',
+        'Wednesday':'周三',
+        'Thursday':'周四',
+        'Friday':'周五',
+        'Saturday':'周六',
+        'Sunday':'周日',
+    }
 
     i = 0
     for live in lives:
@@ -94,18 +93,17 @@ def write_data(lives):
         start_times.append(live.start_time)
         end_times.append(live.end_time)
         live_types.append(live.live_type)
-        dates.append(live.date)
-        weekdays.append(live.weekday)
+        dates.append(datetime.strftime(live.date, '%Y-%m-%d'))
+        weekdays.append(weekdayChinese[datetime.strftime(live.date, '%A')])
         i += 1
     datas = {'主播':influencers, '开始':start_times,
             '结束':end_times, '类型':live_types,
-            '日期':dates, '星期':weekdays}
+            '日期':dates, '星期':weekdays, '景':None, '备注':None}
     df = pd.DataFrame(data=datas)
     print(df)
     today = datetime.today()
     thismonth = today.strftime('%m')
-    print(thismonth)
-    df.to_excel('./' + str(thismonth) + '月排期细表.xlsx')
+    df.to_excel('./' + str(thismonth) + '月排期细表.xlsx', index=None)
 
 
 
