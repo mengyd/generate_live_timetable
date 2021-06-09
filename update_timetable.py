@@ -1,24 +1,13 @@
 import pandas as pd
-import os, json
+import os
 import calendar
 from datetime import datetime, timedelta
 from Live import Live
+from loadconfig import loadConfig
 
 pd.set_option('display.max_rows', None)
 # Load configurations
-def loadConfig(config_path):
-    f = open(config_path,'r', encoding='UTF-8')
-    config_data = json.load(f)
-    return config_data
-
-def loadAllias(allias_path):
-    f = open(allias_path,'r', encoding='UTF-8')
-    dict_allias = json.load(f)
-    return dict_allias
-
-workpath = os.path.abspath(os.path.join(os.getcwd(), ""))
-config = loadConfig(workpath+'/config.json')
-allias = loadAllias(workpath+'/allias.json')
+config = loadConfig('params')
 
 def read_source_file(source_file):
     source_df = pd.read_excel(source_file)

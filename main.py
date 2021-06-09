@@ -1,17 +1,14 @@
 import pandas as pd
-import os, json
+import os
 from datetime import datetime
 from Live import Live
+from loadconfig import loadConfig
 
+# Print all rows
 pd.set_option('display.max_rows', None)
-# Load configurations
-def loadConfig(config_path):
-    f = open(config_path,'r', encoding='UTF-8')
-    config_data = json.load(f)
-    return config_data
 
-workpath = os.path.abspath(os.path.join(os.getcwd(), ""))
-config = loadConfig(workpath+'/config.json')
+# Load configurations
+config = loadConfig('params')
 
 def hasNumbers(source_string):
     for char in source_string:

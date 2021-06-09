@@ -1,27 +1,16 @@
 import pandas as pd
-import os, json
+import os
 from datetime import datetime, timedelta
 from LiveInfo import LiveInfo
 from Product import Product
+from loadconfig import loadConfig
 import generatePDF
 
 # Print all rows
 pd.set_option('display.max_rows', None)
 
 # Load configurations
-def loadConfig(config_path):
-    f = open(config_path,'r', encoding='UTF-8')
-    config_data = json.load(f)
-    return config_data
-
-def loadAllias(allias_path):
-    f = open(allias_path,'r', encoding='UTF-8')
-    dict_allias = json.load(f)
-    return dict_allias
-
-workpath = os.path.abspath(os.path.join(os.getcwd(), ""))
-config = loadConfig(workpath+'/config.json')
-allias = loadAllias(workpath+'/allias.json')
+config, allias = loadConfig()
 
 def getProdID(product_link):
     product_link = product_link.strip()
