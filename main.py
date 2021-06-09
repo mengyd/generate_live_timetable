@@ -1,8 +1,17 @@
 import pandas as pd
-import os, math
+import os, json
 from datetime import datetime
 from Live import Live
 
+pd.set_option('display.max_rows', None)
+# Load configurations
+def loadConfig(config_path):
+    f = open(config_path,'r', encoding='UTF-8')
+    config_data = json.load(f)
+    return config_data
+
+workpath = os.path.abspath(os.path.join(os.getcwd(), ""))
+config = loadConfig(workpath+'/config.json')
 
 def hasNumbers(source_string):
     for char in source_string:
@@ -20,6 +29,7 @@ def formatTimeString(time_string):
         time_string = time_string.replace('H', ':00')
     time_string = time_string.replace('H', ':')
     time_string = time_string + ':00'
+    time_string = time_string.replace(';', ':', 1)
     return time_string
    
 def extractTimes(time_string):
@@ -87,7 +97,6 @@ def write_data(lives):
         'Sunday':'周日',
     }
 
-    i = 0
     for live in lives:
         influencers.append(live.influencer)
         start_times.append(live.start_time)
@@ -95,7 +104,7 @@ def write_data(lives):
         live_types.append(live.live_type)
         dates.append(datetime.strftime(live.date, '%Y-%m-%d'))
         weekdays.append(weekdayChinese[datetime.strftime(live.date, '%A')])
-        i += 1
+
     datas = {'主播':influencers, '开始':start_times,
             '结束':end_times, '类型':live_types,
             '日期':dates, '星期':weekdays, '景':None, '备注':None}
@@ -106,11 +115,12 @@ def write_data(lives):
     df.to_excel('./' + str(thismonth) + '月排期细表.xlsx', index=None)
 
 
-
 if __name__ == '__main__':
     workpath = os.path.abspath(os.path.join(os.getcwd(), ""))
     while True:
         source_file = input("输入要导入的源排期表路径：")
+        if not source_file :
+            source_file = config['origin_timetable_file']
         if source_file and os.path.exists(source_file) :
             break
     

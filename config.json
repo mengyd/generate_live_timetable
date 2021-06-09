@@ -1,8 +1,10 @@
 {
     "timetable_height": 150,
     "producttable_height": 450,
+    "origin_timetable_file": "C:/Users/yidon/OneDrive/桌面/【东软xMespace】6月直播排期表.xlsx",
     "default_sourcefile": "C:/Users/yidon/OneDrive/桌面/06月排期细表.xlsx",
     "product_file": "C:/Users/yidon/OneDrive/桌面/6月UGC产品总表.xlsx",
+    "update_source_file": "C:/Workspace/generate_live_timetable/06月排期细表.xlsx",
     "image_timetable": "C:/Users/yidon/OneDrive/桌面/t.png",
     "image_producttable": "C:/Users/yidon/OneDrive/桌面/p.png",
     "single_live_types": ["UGC","IP-UGC","运动","假发专场","品牌专场","工具","首发","Anker 混播","Mibro 混播"],
