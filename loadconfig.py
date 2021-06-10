@@ -1,6 +1,5 @@
 import os, json
 
-# Load configurations
 def loadParams(params_path):
     f = open(params_path,'r', encoding='UTF-8')
     params_data = json.load(f)

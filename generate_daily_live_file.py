@@ -1,10 +1,10 @@
 import pandas as pd
 import os
+import generatePDF
 from datetime import datetime, timedelta
 from LiveInfo import LiveInfo
 from Product import Product
 from loadconfig import loadConfig
-import generatePDF
 
 # Print all rows
 pd.set_option('display.max_rows', None)

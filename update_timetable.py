@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 from Live import Live
 from loadconfig import loadConfig
 
+# Print all rows
 pd.set_option('display.max_rows', None)
 # Load configurations
 config = loadConfig('params')
@@ -33,11 +34,14 @@ def read_update_source(update_source):
 def merge_sources(source_file_lives, update_source_file_lives, begin, end):
     updated_lives = []
     for live in source_file_lives:
-        if datetime.strptime(datetime.strftime(live.date, "%Y%m%d"), '%Y%m%d') < begin:
+        live.date = datetime.strptime(datetime.strftime(live.date, "%Y%m%d"), '%Y%m%d')
+        if live.date < begin:
             updated_lives.append(live)
     for live in update_source_file_lives:
-        if datetime.strptime(live.date, '%Y-%m-%d') >= begin and datetime.strptime(live.date, '%Y-%m-%d') <= end:
-            live.date = datetime.strptime(live.date, '%Y-%m-%d')
+        live.date = datetime.strptime(live.date, '%Y-%m-%d')
+        live.start_time = datetime.strptime(live.start_time, '%H:%M:%S').time()
+        live.end_time = datetime.strptime(live.end_time, '%H:%M:%S').time()
+        if live.date >= begin and live.date <= end:
             updated_lives.append(live)
     return updated_lives
 
@@ -53,7 +57,7 @@ def write_data(updated_lives, account_sheet_df):
 
     for live in updated_lives:
         influencers.append(live.influencer)
-        dates.append(datetime.strftime(live.date, '%Y-%m-%d'))
+        dates.append(live.date.date())
         start_times.append(live.start_time)
         end_times.append(live.end_time)
         live_types.append(live.live_type)
