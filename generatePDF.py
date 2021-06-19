@@ -2,6 +2,8 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Image
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfbase import pdfmetrics
+from PIL import Image as Img
+from loadconfig import loadConfig
 # Normal
 # BodyText
 # Italic
@@ -18,18 +20,33 @@ from reportlab.pdfbase import pdfmetrics
 # UnorderedList
 # OrderedList
 
+# Load configurations
+config = loadConfig(choice='params')
+
 def link(show_text, link_text):
     link = '<a href="%(link)s" color="blue">%(show)s</a>'\
         %{'link': link_text, 'show': show_text}
     return link
 
-def generate_PDF(liveinfos, img_timetable, img_producttable, h_time, h_prod, filename):
+def generate_PDF(liveinfos, img_timetable, img_producttable, filename):
     doc = SimpleDocTemplate(filename[4:]+".pdf")
+    
+    # Calculate image height
+    im_timetable = Img.open(img_timetable)
+    im_producttable = Img.open(img_producttable)
+    im_timetable_width, im_timetable_height = im_timetable.size
+    im_producttable_width, im_producttable_height = im_producttable.size
 
-    w_time = 500
-    w_prod = 500
-    timetable_image = Image(img_timetable, w_time, h_time)
-    producttable_image = Image(img_producttable, w_prod, h_prod)
+    image_width = config["table_image_width"]
+
+    timetable_zoomrate = image_width/im_timetable_width
+    producttable_zoomrate = image_width/im_producttable_width
+    h_time = im_timetable_height * timetable_zoomrate
+    h_prod = im_producttable_height * producttable_zoomrate
+
+    # Load images with defined sizes
+    timetable_image = Image(img_timetable, image_width, h_time)
+    producttable_image = Image(img_producttable, image_width, h_prod)
 
     pdfmetrics.registerFont(TTFont('SimSun', './font/SimSun.ttf'))
     styles = getSampleStyleSheet()

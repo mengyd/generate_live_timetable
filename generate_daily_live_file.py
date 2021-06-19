@@ -115,29 +115,7 @@ if __name__ == '__main__':
             break
         except Exception as e:
             pass
-    while True:
-        h_time_string = input("输入时间表高度（default " \
-            + str(config['timetable_height']) + "）：")
-        if not h_time_string:
-            h_time = config['timetable_height']
-        else:
-            h_time = int(h_time_string)
-
-        if h_time > 0:
-            print('时间表高度: ', h_time)
-            break
-    while True:
-        h_prod_string = input("输入产品表高度（default " \
-            + str(config['producttable_height']) + "）：")
-        if not h_prod_string:
-            h_prod = config['producttable_height']
-        else:
-            h_prod = int(h_prod_string)
-
-        if h_prod > 0:
-            print('产品表高度: ', h_prod)
-            break
 
     live_infos = read_timetable(source_file, date)
     generatePDF.generate_PDF(live_infos, config['image_timetable'], \
-        config['image_producttable'], h_time, h_prod, date_text)
+        config['image_producttable'], date_text)
