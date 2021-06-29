@@ -9,6 +9,7 @@
     "image_producttable": "C:/Users/yidon/OneDrive/桌面/p.png",
     "single_live_types": ["UGC","IP-UGC","运动","假发专场","品牌专场","工具","首发","Dreame专场","优米混播","ATTAGEMS珠宝专场"],
     "normal_live_types": ["UGC","IP-UGC","运动","优米混播"],
+    "origin_timetable_tablename": "平台排期表",
     "producttable_influencer_column_title": "主播",
     "producttable_link_column_num": 2,
     "producttable_name_column_num": 4,

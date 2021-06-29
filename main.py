@@ -43,7 +43,7 @@ def extractTimes(time_string):
     return start_time, end_time
 
 def readData(source_file):
-    source_table = pd.read_excel(source_file)
+    source_table = pd.read_excel(source_file, config["origin_timetable_tablename"])
     source_table['主播'] = source_table['主播'].str.strip()
     headers = source_table.columns
     rows = source_table.itertuples()
