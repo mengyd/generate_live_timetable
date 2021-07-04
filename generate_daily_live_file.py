@@ -26,7 +26,7 @@ def normalizeNameColumn(column):
 
 def read_timetable(source_file, date):
     source_table = pd.read_excel(source_file)
-    account_table = pd.read_excel(source_file, 1)
+    account_table = pd.read_excel(config['account_file'], config['accounttable_tablename'])
     product_table = pd.read_excel(config['product_file'], config['producttable_tablename'])
 
     # load column names and numbers from configurations
