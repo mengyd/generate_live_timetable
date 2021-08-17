@@ -1,27 +1,16 @@
 import pandas as pd
-import os, json
+import os
+import generatePDF
 from datetime import datetime, timedelta
 from LiveInfo import LiveInfo
 from Product import Product
-import generatePDF
+from loadconfig import loadConfig
 
 # Print all rows
 pd.set_option('display.max_rows', None)
 
 # Load configurations
-def loadConfig(config_path):
-    f = open(config_path,'r', encoding='UTF-8')
-    config_data = json.load(f)
-    return config_data
-
-def loadAllias(allias_path):
-    f = open(allias_path,'r', encoding='UTF-8')
-    dict_allias = json.load(f)
-    return dict_allias
-
-workpath = os.path.abspath(os.path.join(os.getcwd(), ""))
-config = loadConfig(workpath+'/config.json')
-allias = loadAllias(workpath+'/allias.json')
+config, allias = loadConfig()
 
 def getProdID(product_link):
     product_link = product_link.strip()
@@ -37,7 +26,7 @@ def normalizeNameColumn(column):
 
 def read_timetable(source_file, date):
     source_table = pd.read_excel(source_file)
-    account_table = pd.read_excel(source_file, 1)
+    account_table = pd.read_excel(config['account_file'], config['accounttable_tablename'])
     product_table = pd.read_excel(config['product_file'], config['producttable_tablename'])
 
     # load column names and numbers from configurations
@@ -126,29 +115,7 @@ if __name__ == '__main__':
             break
         except Exception as e:
             pass
-    while True:
-        h_time_string = input("输入时间表高度（default " \
-            + str(config['timetable_height']) + "）：")
-        if not h_time_string:
-            h_time = config['timetable_height']
-        else:
-            h_time = int(h_time_string)
-
-        if h_time > 0:
-            print('时间表高度: ', h_time)
-            break
-    while True:
-        h_prod_string = input("输入产品表高度（default " \
-            + str(config['producttable_height']) + "）：")
-        if not h_prod_string:
-            h_prod = config['producttable_height']
-        else:
-            h_prod = int(h_prod_string)
-
-        if h_prod > 0:
-            print('产品表高度: ', h_prod)
-            break
 
     live_infos = read_timetable(source_file, date)
     generatePDF.generate_PDF(live_infos, config['image_timetable'], \
-        config['image_producttable'], h_time, h_prod, date_text)
+        config['image_producttable'], date_text)
