@@ -33,20 +33,17 @@ def generate_PDF(liveinfos, img_timetable, img_producttable, filename):
     
     # Calculate image height
     im_timetable = Img.open(img_timetable)
-    im_producttable = Img.open(img_producttable)
     im_timetable_width, im_timetable_height = im_timetable.size
-    im_producttable_width, im_producttable_height = im_producttable.size
+
 
     image_width = config["table_image_width"]
 
     timetable_zoomrate = image_width/im_timetable_width
-    producttable_zoomrate = image_width/im_producttable_width
+
     h_time = im_timetable_height * timetable_zoomrate
-    h_prod = im_producttable_height * producttable_zoomrate
 
     # Load images with defined sizes
     timetable_image = Image(img_timetable, image_width, h_time)
-    producttable_image = Image(img_producttable, image_width, h_prod)
 
     pdfmetrics.registerFont(TTFont('SimSun', './font/SimSun.ttf'))
     styles = getSampleStyleSheet()
@@ -55,7 +52,15 @@ def generate_PDF(liveinfos, img_timetable, img_producttable, filename):
     styles.add(ParagraphStyle(fontName='SimSun', name='Song_bg', leading=20, fontSize=14))
     story = []
     story.append(timetable_image)
-    story.append(producttable_image)
+
+    if config["load_productImg"]:
+        im_producttable = Img.open(img_producttable)
+        im_producttable_width, im_producttable_height = im_producttable.size
+        producttable_zoomrate = image_width/im_producttable_width
+        h_prod = im_producttable_height * producttable_zoomrate
+        producttable_image = Image(img_producttable, image_width, h_prod)
+        story.append(producttable_image)
+
     for live in liveinfos:
         story.append(Paragraph(live.influencer, styles['Heading2']))
         story.append(Paragraph(live.account, styles['Normal']))
