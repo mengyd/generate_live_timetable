@@ -119,3 +119,6 @@ if __name__ == '__main__':
     live_infos = read_timetable(source_file, date)
     generatePDF.generate_PDF(live_infos, config['image_timetable'], \
         config['image_producttable'], date_text)
+
+    # pause
+    os.system('pause')
