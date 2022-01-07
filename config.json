@@ -1,14 +1,14 @@
 {
     "table_image_width": 500,
-    "origin_timetable_file": "C:/Users/yidon/OneDrive/桌面/【法国站】8月直播排期总表 - Mespace.xlsx",
-    "default_sourcefile": "C:/Users/yidon/OneDrive/桌面/08月排期细表.xlsx",
-    "product_file": "C:/Users/yidon/OneDrive/桌面/【法国站】8月直播排期总表 - Mespace.xlsx",
-    "update_source_file": "C:/Workspace/generate_live_timetable/08月排期细表.xlsx",
-    "account_file": "C:/Users/yidon/OneDrive/桌面/【法国站】8月直播排期总表 - Mespace.xlsx",
+    "origin_timetable_file": "C:/Users/yidon/OneDrive/桌面/【东软xMespace】1月直播排期表.xlsx",
+    "default_sourcefile": "C:/Users/yidon/OneDrive/桌面/1月排期细表.xlsx",
+    "product_file": "C:/Users/yidon/OneDrive/桌面/【东软xMespace】1月直播排期表.xlsx",
+    "update_source_file": "C:/Workspace/generate_live_timetable/1月排期细表.xlsx",
+    "account_file": "C:/Users/yidon/OneDrive/桌面/【东软xMespace】1月直播排期表.xlsx",
     "image_timetable": "C:/Users/yidon/OneDrive/桌面/t.png",
     "image_producttable": "C:/Users/yidon/OneDrive/桌面/p.png",
-    "single_live_types": ["UGC","IP-UGC","运动","假发专场","品牌专场","工具","首发","Dreame专场","优米混播","Anker专场"],
-    "normal_live_types": ["UGC","IP-UGC","运动","优米混播"],
+    "single_live_types": ["UGC","IP-UGC","运动","假发专场","品牌专场","工具","首发","Dreame专场","Realme混播","Anker专场"],
+    "normal_live_types": ["UGC","IP-UGC","运动","Realme混播"],
     "origin_timetable_tablename": "UGC主播时间表",
     "producttable_influencer_column_title": "主播",
     "producttable_link_column_num": 2,
@@ -21,5 +21,6 @@
     "sourcetable_livetype_column_title": "类型",
     "accounttable_influencer_column_title": "主播",
     "accounttable_account_column_title": "账号",
-    "accounttable_tablename": "UGC主播账号"
+    "accounttable_tablename": "UGC主播账号",
+    "load_productImg": true
 }
