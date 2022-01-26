@@ -7,7 +7,7 @@
     "account_file": "C:/Users/yidon/OneDrive/桌面/【东软xMespace】1月直播排期表.xlsx",
     "image_timetable": "C:/Users/yidon/OneDrive/桌面/t.png",
     "image_producttable": "C:/Users/yidon/OneDrive/桌面/p.png",
-    "single_live_types": ["UGC","IP-UGC","运动","假发专场","品牌专场","工具","首发","Dreame专场","Realme混播","Anker专场"],
+    "single_live_types": ["UGC","IP-UGC","运动","假发专场","品牌专场","工具","首发","运动鞋专场"],
     "normal_live_types": ["UGC","IP-UGC","运动","Realme混播"],
     "origin_timetable_tablename": "UGC主播时间表",
     "producttable_influencer_column_title": "主播",
