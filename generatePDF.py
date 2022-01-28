@@ -67,11 +67,14 @@ def generate_PDF(liveinfos, img_timetable, img_producttable, filename):
         i = 0
         links = ''
         ids = ''
+        codes = []
 
         story.append(Paragraph('Infos :', styles['Heading5']))
         for product in live.products:
             for code in product.codes:
-                story.append(Paragraph(str(code), styles['Song']))
+                if code not in codes:
+                    codes.append(code)
+                    story.append(Paragraph(str(code), styles['Song']))
 
         story.append(Paragraph('Products :', styles['Heading5']))
         for product in live.products:
@@ -81,7 +84,7 @@ def generate_PDF(liveinfos, img_timetable, img_producttable, filename):
             story.append(Paragraph("产品名: " + product.alias \
                 + ";\tID: " + product.id, styles['Song_sm']))
             if product.codes:
-                story.append(Paragraph("Codes: ", styles['Bullet']))
+                story.append(Paragraph("Infos: ", styles['Bullet']))
                 for code in product.codes:
                     story.append(Paragraph(code, styles['Song_sm']))
             # 产品ID

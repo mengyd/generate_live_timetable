@@ -35,6 +35,7 @@ def read_timetable(source_file, date):
     prod_name_col = config["producttable_name_column_num"]
     prod_alias_col = config["producttable_alias_column_num"]
     prod_code_col = config["producttable_code_column_num"]
+    prod_influencer_col_name = config["producttable_code_column_title"]
 
     src_influencer_col = config["sourcetable_influencer_column_title"]
     src_date_col = config["sourcetable_date_column_title"]
@@ -53,6 +54,10 @@ def read_timetable(source_file, date):
 
     # influencer column of time table
     source_table[src_influencer_col] = normalizeNameColumn(source_table[src_influencer_col])
+
+    # product codes column of product table
+    product_table[prod_influencer_col_name] = product_table[prod_influencer_col_name]\
+        .fillna(method='pad')
 
     datas = source_table.loc[source_table[src_date_col] == date]
     influencers = datas[src_influencer_col]
