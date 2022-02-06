@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 from LiveInfo import LiveInfo
 from Product import Product
 from loadconfig import loadConfig
+from main import hasNumbers
 
 # Print all rows
 pd.set_option('display.max_rows', None)
@@ -35,7 +36,7 @@ def read_timetable(source_file, date):
     prod_name_col = config["producttable_name_column_num"]
     prod_alias_col = config["producttable_alias_column_num"]
     prod_code_col = config["producttable_code_column_num"]
-    prod_influencer_col_name = config["producttable_code_column_title"]
+    prod_code_col_name = config["producttable_code_column_title"]
 
     src_influencer_col = config["sourcetable_influencer_column_title"]
     src_date_col = config["sourcetable_date_column_title"]
@@ -56,8 +57,8 @@ def read_timetable(source_file, date):
     source_table[src_influencer_col] = normalizeNameColumn(source_table[src_influencer_col])
 
     # product codes column of product table
-    product_table[prod_influencer_col_name] = product_table[prod_influencer_col_name]\
-        .fillna(method='pad')
+    # product_table[prod_code_col_name] = product_table[prod_code_col_name]\
+    #     .ffill()
 
     datas = source_table.loc[source_table[src_date_col] == date]
     influencers = datas[src_influencer_col]
@@ -65,6 +66,8 @@ def read_timetable(source_file, date):
     for influencer in influencers:
         print(influencer)
         products = []
+        fillna = False
+        copy_info = ""
         liveline = datas.loc[datas[src_influencer_col] == influencer]
         livetypes = liveline[src_livetype_col].to_numpy()
         for livetype in livetypes:
@@ -89,6 +92,12 @@ def read_timetable(source_file, date):
                             if isinstance(prod[prod_code_col], str):
                                 # 添加产品Code
                                 product.codes.append(prod[prod_code_col])
+                                # 如果是某日直播选品信息
+                                if "选品" in prod[prod_code_col] and hasNumbers(prod[prod_code_col]):
+                                    fillna = True
+                                    copy_info = prod[prod_code_col]
+                            elif fillna:
+                                product.codes.append(copy_info)
                             products.append(product)
                 liveinfo = LiveInfo(influencer, account, date, products)
                 liveinfos.append(liveinfo)
