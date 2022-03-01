@@ -36,7 +36,7 @@ def read_timetable(source_file, date):
     prod_name_col = config["producttable_name_column_num"]
     prod_alias_col = config["producttable_alias_column_num"]
     prod_code_col = config["producttable_code_column_num"]
-    prod_code_col_name = config["producttable_code_column_title"]
+    # prod_code_col_name = config["producttable_code_column_title"]
 
     src_influencer_col = config["sourcetable_influencer_column_title"]
     src_date_col = config["sourcetable_date_column_title"]
